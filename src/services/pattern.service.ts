@@ -10,7 +10,7 @@ export abstract class PatternService {
     this.setup();
   }
 
-  protected setup() {
+  protected setup(idRestaurante?: string) {
     return db.collection(this.COLLECTION_NAME);
   }
 
@@ -20,6 +20,10 @@ export abstract class PatternService {
 
   protected firestore_admin() {
     return admin;
+  }
+
+  protected getRef(id: string) {
+    return this.setup().doc(id)
   }
 
 }
