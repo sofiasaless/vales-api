@@ -1,14 +1,20 @@
 import express from "express";
-import restauranteRoutes from "./controllers/restaurante.controller";
+import { corsConfig } from "./config/cors";
+import empresaAuthRoutes from "./controllers/empresa.auth.controller";
+import empresaRouter from "./controllers/empresa.controller";
+import gerenteRouter from "./controllers/gerente.controller";
 
 const app = express();
 
+app.use(corsConfig);
 app.use(express.json());
 
 // verificação de atividade
 app.get("/health", (req, res) => res.json({ ok: true }));
 
 // rotas
-app.use("/api/restaurante", restauranteRoutes);
+app.use("/api/auth/empresa", empresaAuthRoutes);
+app.use("/api/gerente", gerenteRouter);
+app.use("/api/empresa", empresaRouter);
 
 export default app;
