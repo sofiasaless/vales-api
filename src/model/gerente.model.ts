@@ -21,3 +21,5 @@ export type GerenteUpdateRequestBody = Omit<Gerente, "id" | "restaurante_ref" | 
 export type GerenteFirestorePostRequestBody = Omit<Gerente, "id" | "restaurante_ref"> & {
   restaurante_ref: DocumentReference
 }
+
+export type GerenteAuthPostRequestBody = Pick<Gerente, "id" | "senha">;

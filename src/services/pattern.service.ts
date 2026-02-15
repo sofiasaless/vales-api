@@ -22,7 +22,7 @@ export abstract class PatternService {
     return admin;
   }
 
-  protected getRef(id: string) {
+  protected getRef(id: string, idEmpresa?: string) {
     return this.setup().doc(id)
   }
 

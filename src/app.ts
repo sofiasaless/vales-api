@@ -1,7 +1,8 @@
 import express from "express";
-import empresaAuthRoutes from "./controllers/empresa.auth.controller";
-import gerenteRouter from "./controllers/gerente.controller";
 import { corsConfig } from "./config/cors";
+import empresaAuthRoutes from "./controllers/empresa.auth.controller";
+import empresaRouter from "./controllers/empresa.controller";
+import gerenteRouter from "./controllers/gerente.controller";
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.get("/health", (req, res) => res.json({ ok: true }));
 
 // rotas
 app.use("/api/auth/empresa", empresaAuthRoutes);
-app.use("/api/gerente", gerenteRouter)
+app.use("/api/gerente", gerenteRouter);
+app.use("/api/empresa", empresaRouter);
 
 export default app;
