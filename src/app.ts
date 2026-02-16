@@ -5,6 +5,7 @@ import empresaRouter from "./controllers/empresa.controller";
 import funcionarioRouter from "./controllers/funcionario.controller";
 import gerenteRouter from "./controllers/gerente.controller";
 import menuRouter from "./controllers/menu.controller";
+import pagamentoRouter from "./controllers/pagamento.controller";
 
 const app = express();
 
@@ -20,5 +21,6 @@ app.use("/api/gerente", gerenteRouter);
 app.use("/api/empresa", empresaRouter);
 app.use("/api/funcionario", funcionarioRouter)
 app.use("/api/menu", menuRouter)
+app.use("/api/pagamento", pagamentoRouter)
 
 export default app;
