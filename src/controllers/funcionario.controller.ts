@@ -1,9 +1,21 @@
 import { Request, Response, Router } from "express";
 import { authMiddleware } from "../auth/authMiddleware";
 import { funcionarioService } from "../services/funcionario.service";
-import { Vale } from "../model/funcionario.model";
+import { Funcionario, Vale } from "../model/funcionario.model";
 
 const funcionarioRouter = Router()
+
+async function criar(req: Request, res: Response) {
+  try {
+    const empresaId = req.user?.uid!
+    const body = req.body as Funcionario
+    await funcionarioService.criar(empresaId, body);
+    res.sendStatus(200);
+  } catch (error: any) {
+    res.status(400).json({ message: error.message })
+  }
+}
+funcionarioRouter.post('/criar', authMiddleware('manager'), criar)
 
 async function listar(req: Request, res: Response) {
   try {

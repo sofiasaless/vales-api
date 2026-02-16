@@ -1,13 +1,24 @@
 import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { COLLECTIONS } from "../enum/collections.enum";
-import { Funcionario, Vale, ValeFirestorePostRequestBody } from "../model/funcionario.model";
+import { Funcionario, FuncionarioFirestorePostRequestBody, Vale, ValeFirestorePostRequestBody } from "../model/funcionario.model";
 import { docToObject, idToDocumentRef } from "../util/firebase.util";
 import { PatternService } from "./pattern.service";
-import { db } from "../config/firebase";
 
 class FuncionarioService extends PatternService {
   constructor() {
     super(COLLECTIONS.FUNCIONARIOS)
+  }
+
+  public async criar(idEmpresa: string, funcionario: Funcionario) {
+    const funcionarioParaSalvar: FuncionarioFirestorePostRequestBody = {
+      ...funcionario,
+      restaurante_ref: idToDocumentRef(idEmpresa, COLLECTIONS.RESTAURANTES),
+      data_admissao: new Date(funcionario.data_admissao),
+      data_nascimento: funcionario.data_nascimento?new Date(funcionario.data_nascimento):null,
+      data_cadastro: new Date()
+    }
+
+    await this.setup().add(funcionarioParaSalvar);
   }
 
   public async listar(idEmpresa: string) {
@@ -49,7 +60,6 @@ class FuncionarioService extends PatternService {
         produto_ref: v.produto_ref ? idToDocumentRef(v.produto_ref, COLLECTIONS.MENU) : null
       }
     })
-    console.info(valesParaSalvar)
 
     await this.setup().doc(idFuncioario).update({
       vales: FieldValue.arrayUnion(...valesParaSalvar)
@@ -57,8 +67,9 @@ class FuncionarioService extends PatternService {
   }
 
   public async removerVale(idFuncioario: string, vale: Vale) {
-    const valeParaRemover = {
+    let valeParaRemover = {
       ...vale,
+      produto_ref: (vale.produto_ref)?idToDocumentRef(vale.produto_ref, COLLECTIONS.MENU):null,
       data_adicao: Timestamp.fromDate(new Date(vale.data_adicao))
     }
 

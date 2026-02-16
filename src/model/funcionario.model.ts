@@ -23,8 +23,8 @@ export type Funcionario = {
   tipo: TipoFuncionario,
   dias_trabalhados_semanal?: number;
   foto_url?: string,
-  data_nascimento?: Date | null,
-  data_admissao: Date,
+  data_nascimento?: string | null,
+  data_admissao: string,
   vales: Vale[],
   incentivo: GanhosIncentivo[],
   primeiro_dia_pagamento: number,
@@ -34,8 +34,10 @@ export type Funcionario = {
   contrato?: ContratoFuncionario
 }
 
-export type FuncionarioFirestorePostRequestBody = Omit<Funcionario, "id" | "restaurante_ref"> & {
-  restaurante_ref: DocumentReference
+export type FuncionarioFirestorePostRequestBody = Omit<Funcionario, "id" | "restaurante_ref" | "data_nascimento" | "data_admissao"> & {
+  restaurante_ref: DocumentReference,
+  data_admissao: Date,
+  data_nascimento?: Date | null
 }
 
 export type FuncionarioUpdateRequestBody = Pick<
