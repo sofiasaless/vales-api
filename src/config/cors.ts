@@ -2,6 +2,7 @@ import cors from "cors";
 
 const allowedOrigins = [
   "http://localhost:8080",
+  "https://vales-web.vercel.app"
 ];
 
 export const corsConfig = cors({
