@@ -2,7 +2,10 @@ import express from "express";
 import { corsConfig } from "./config/cors";
 import empresaAuthRoutes from "./controllers/empresa.auth.controller";
 import empresaRouter from "./controllers/empresa.controller";
+import funcionarioRouter from "./controllers/funcionario.controller";
 import gerenteRouter from "./controllers/gerente.controller";
+import menuRouter from "./controllers/menu.controller";
+import pagamentoRouter from "./controllers/pagamento.controller";
 
 const app = express();
 
@@ -16,5 +19,8 @@ app.get("/health", (req, res) => res.json({ ok: true }));
 app.use("/api/auth/empresa", empresaAuthRoutes);
 app.use("/api/gerente", gerenteRouter);
 app.use("/api/empresa", empresaRouter);
+app.use("/api/funcionario", funcionarioRouter)
+app.use("/api/menu", menuRouter)
+app.use("/api/pagamento", pagamentoRouter)
 
 export default app;

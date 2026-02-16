@@ -13,35 +13,53 @@ export function idToDocumentRef(id: string, collection: COLLECTIONS): DocumentRe
 }
 
 function transformFieldValue(value: any): any {
-  // Se for Timestamp, converte para Date
+  if (value === null || value === undefined) return value;
+
+  // Timestamp -> ISO string
   if (value instanceof Timestamp) {
-    return value.toDate();
+    return value.toDate().toISOString();
   }
-  
-  // Se for DocumentReference, extrai o ID
-  if (value?.id && typeof value.id === 'string') {
-    return value.id || '';
+
+  // DocumentReference -> id
+  if (value instanceof DocumentReference) {
+    return value.id;
   }
-  
-  // Se for um array, processa cada elemento
+
+  // Array -> recursivo
   if (Array.isArray(value)) {
     return value.map(transformFieldValue);
   }
-  
-  // Mantém outros valores
+
+  // Objeto comum -> recursivo
+  if (typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value).map(([k, v]) => [k, transformFieldValue(v)])
+    );
+  }
+
+  // Primitivo
   return value;
 }
 
 export function docToObject<T>(
-  id: string, 
+  id: string,
   data: FirebaseFirestore.DocumentData
 ): T {
-  const transformedData = Object.fromEntries(
-    Object.entries(data).map(([key, value]) => [
-      key, 
-      transformFieldValue(value)
-    ])
-  );
-  
+  const transformedData = transformFieldValue(data);
+
   return { ...transformedData, id } as T;
 }
+
+// export function docToObject<T>(
+//   id: string, 
+//   data: FirebaseFirestore.DocumentData
+// ): T {
+//   const transformedData = Object.fromEntries(
+//     Object.entries(data).map(([key, value]) => [
+//       key, 
+//       transformFieldValue(value)
+//     ])
+//   );
+  
+//   return { ...transformedData, id } as T;
+// }
