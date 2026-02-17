@@ -1,4 +1,4 @@
-import { FieldValue } from "firebase-admin/firestore";
+import { FieldValue, Transaction } from "firebase-admin/firestore";
 import { db } from "../config/firebase";
 import { COLLECTIONS } from "../enum/collections.enum";
 import { Vale, ValeFirestorePostRequestBody } from "../model/funcionario.model";
@@ -55,7 +55,7 @@ class PagamentoService extends PatternService {
     })
   }
 
-  public async listar(idFuncionario: string, filtro: PagamentosFiltroData) {
+  public async listarFiltrado(idFuncionario: string, filtro: PagamentosFiltroData) {
     const dataInicio = new Date(filtro.data_inicio);
     const dataFim = new Date(filtro.data_fim);
 
@@ -65,6 +65,18 @@ class PagamentoService extends PatternService {
       .where("data_pagamento", "<=", dataFim)
       .orderBy("data_pagamento", "desc")
     .get()
+
+    if (snapShot.empty) return [];
+
+    const pagamentos = snapShot.docs.map((doc) => {
+      return docToObject<Pagamento>(doc.id, doc.data()!)
+    })
+
+    return pagamentos
+  }
+
+  public async listar(idFuncionario: string) {
+    const snapShot = await this.setup().where("funcionario_ref", "==", idToDocumentRef(idFuncionario, COLLECTIONS.FUNCIONARIOS)).get()
 
     if (snapShot.empty) return [];
 

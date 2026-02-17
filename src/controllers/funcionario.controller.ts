@@ -75,4 +75,27 @@ async function removerVale(req: Request, res: Response) {
 }
 funcionarioRouter.put('/vale/remover/:id', authMiddleware('manager'), removerVale)
 
+async function excluir(req: Request, res: Response) {
+  try {
+    const idFuncionario = req.params.id as string
+    await funcionarioService.excluir(idFuncionario);
+    res.sendStatus(200);
+  } catch (error: any) {
+    res.status(400).json({ message: error.message })
+  }
+}
+funcionarioRouter.delete('/excluir/:id', authMiddleware('manager'), excluir)
+
+async function atualizar(req: Request, res: Response) {
+  try {
+    const idFuncionario = req.params.id as string
+    const body = req.body as Funcionario
+    await funcionarioService.atualizar(idFuncionario, body);
+    res.sendStatus(200);
+  } catch (error: any) {
+    res.status(400).json({ message: error.message })
+  }
+}
+funcionarioRouter.put('/atualizar/:id', authMiddleware('manager'), atualizar)
+
 export default funcionarioRouter;

@@ -1,7 +1,7 @@
 import { db } from "../config/firebase";
 import { COLLECTIONS } from "../enum/collections.enum";
-import { Gerente } from "../model/gerente.model";
-import { verificarSenha } from "../util/bcrypt.util";
+import { Gerente, GerenteFirestorePostRequestBody } from "../model/gerente.model";
+import { criptografarSenha, verificarSenha } from "../util/bcrypt.util";
 import { docToObject, idToDocumentRef } from "../util/firebase.util";
 import { PatternService } from "./pattern.service";
 
@@ -58,6 +58,27 @@ class GerenteService extends PatternService {
     return docToObject<Gerente>(resultado.id, resultado.data()!);
   }
 
+  public async criar(idEmpesa: string, body: Gerente) {
+    const gerenteParaSalvar: GerenteFirestorePostRequestBody = {
+      ...body,
+      senha: criptografarSenha(body.senha),
+      restaurante_ref: idToDocumentRef(idEmpesa, COLLECTIONS.RESTAURANTES),
+      data_criacao: new Date(),
+      ativo: true
+    }
+
+    await this.setup(idEmpesa).add(gerenteParaSalvar);
+  }
+
+  public async excluir(idEmpresa: string, idGerente: string) {
+    await this.setup(idEmpresa).doc(idGerente).delete()
+  }
+
+  public async atualizar(idEmpesa: string, idGerente: string, payload: Partial<Gerente>) {
+    await this.setup(idEmpesa).doc(idGerente).update({
+      ...payload
+    })
+  }
 }
 
 export const gerenteService = new GerenteService()

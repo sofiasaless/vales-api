@@ -3,6 +3,8 @@ import { COLLECTIONS } from "../enum/collections.enum";
 import { Funcionario, FuncionarioFirestorePostRequestBody, Vale, ValeFirestorePostRequestBody } from "../model/funcionario.model";
 import { docToObject, idToDocumentRef } from "../util/firebase.util";
 import { PatternService } from "./pattern.service";
+import { db } from "../config/firebase";
+import { pagamentoService } from "./pagamento.service";
 
 class FuncionarioService extends PatternService {
   constructor() {
@@ -78,14 +80,23 @@ class FuncionarioService extends PatternService {
     })
   }
 
-  public async atualizar(idFuncioario: string, payload: Partial<Funcionario>) {
+  public async atualizar(idFuncioario: string, payload: Funcionario) {
     await this.setup().doc(idFuncioario).update({
-      ...payload
+      ...payload,
+      data_admissao: new Date(payload.data_admissao),
+      data_nascimento: (payload.data_nascimento)?new Date(payload.data_nascimento):null
     })
   }
 
   public async excluir(idFuncioario: string) {
-    await this.setup().doc(idFuncioario).delete()
+    await db.runTransaction(async (transaction) => {
+      transaction.delete(this.setup().doc(idFuncioario))
+
+      const pagamentos = await pagamentoService.listar(idFuncioario)
+      pagamentos.map((p) => {
+        transaction.delete(idToDocumentRef(p.id, COLLECTIONS.PAGAMENTOS))
+      })
+    })
   }
 
 }
