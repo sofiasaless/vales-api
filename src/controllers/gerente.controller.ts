@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import { authMiddleware } from "../auth/authMiddleware";
 import { gerenteService } from "../services/gerente.service";
-import { GerenteAuthPostRequestBody } from "../model/gerente.model";
+import { Gerente, GerenteAuthPostRequestBody } from "../model/gerente.model";
 
 const gerenteRouter = Router()
 
@@ -39,5 +39,42 @@ async function encontrar(req: Request, res: Response) {
   }
 }
 gerenteRouter.get('/encontrar/:id', authMiddleware('manager'), encontrar)
+
+async function criar(req: Request, res: Response) {
+  try {
+    const empresaId = req.user?.uid!
+    const body = req.body as Gerente
+    const resultado = await gerenteService.criar(empresaId, body);
+    res.status(200).json(resultado)
+  } catch (error: any) {
+    res.status(400).json({ message: error.message })
+  }
+}
+gerenteRouter.post('/criar', authMiddleware('manager'), criar)
+
+async function excluir(req: Request, res: Response) {
+  try {
+    const empresaId = req.user?.uid!
+    const gerenteId = req.params.id as string
+    await gerenteService.excluir(empresaId, gerenteId);
+    res.sendStatus(200)
+  } catch (error: any) {
+    res.status(400).json({ message: error.message })
+  }
+}
+gerenteRouter.delete('/excluir/:id', authMiddleware('manager'), excluir)
+
+async function atualizar(req: Request, res: Response) {
+  try {
+    const empresaId = req.user?.uid!
+    const gerenteId = req.params.id as string
+    const payload = req.body as Partial<Gerente>
+    await gerenteService.atualizar(empresaId, gerenteId, payload);
+    res.sendStatus(200)
+  } catch (error: any) {
+    res.status(400).json({ message: error.message })
+  }
+}
+gerenteRouter.put('/atualizar/:id', authMiddleware('manager'), atualizar)
 
 export default gerenteRouter;
