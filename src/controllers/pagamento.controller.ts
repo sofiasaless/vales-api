@@ -22,12 +22,12 @@ async function listar(req: Request, res: Response) {
   try {
     const funcionarioId = req.params.id as string
     const body = req.body as PagamentosFiltroData
-    const resultado = await pagamentoService.listar(funcionarioId, body);
+    const resultado = await pagamentoService.listarFiltrado(funcionarioId, body);
     res.status(200).json(resultado)
   } catch (error: any) {
     res.status(400).json({ message: error.message })
   }
 }
-pagamentoRouter.get('/listar/:id', authMiddleware('manager'), listar)
+pagamentoRouter.post('/listar/:id', authMiddleware('manager'), listar)
 
 export default pagamentoRouter
