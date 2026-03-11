@@ -1,4 +1,5 @@
 import { Request, Response, Router } from "express";
+import { RestaurantePostRequestBody } from "../model/restaurante.model";
 import { empresaAuthService } from "../services/empresa.auth.service";
 import { Role } from "../types/roles.type";
 
@@ -16,5 +17,17 @@ async function definirClaim(req: Request, res: Response) {
   }
 }
 empresaAuthRoutes.put("/claims/:uid/:role", definirClaim)
+
+async function criar(req: Request, res: Response) {
+  try {
+    const body = req.body as RestaurantePostRequestBody
+    await empresaAuthService.criar(body);
+    res.sendStatus(200);
+  } catch (error: any) {
+    console.error(error)
+    res.sendStatus(400).json({ message: error.message })
+  }
+}
+empresaAuthRoutes.post("/cadastrar", criar)
 
 export default empresaAuthRoutes

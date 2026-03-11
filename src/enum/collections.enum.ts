@@ -5,5 +5,6 @@ export enum COLLECTIONS {
   MENU = "menu",
   PAGAMENTOS = "pagamentos",
   INCENTIVOS = "incentivos",
-  FUNCIONARIOS_INCENTIVO = "funcionarios_incentivos"
+  FUNCIONARIOS_INCENTIVO = "funcionarios_incentivos",
+  MENSALIDADES = "mensalidades"
 }
