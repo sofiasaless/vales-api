@@ -87,6 +87,12 @@ class GerenteService extends PatternService {
   }
 
   public async atualizar(idEmpesa: string, idGerente: string, payload: Partial<Gerente>) {
+    if (payload.senha) {
+      await this.setup(idEmpesa).doc(idGerente).update({
+        senha: criptografarSenha(payload.senha)
+      })
+    }
+    
     await this.setup(idEmpesa).doc(idGerente).update({
       ...payload
     })
