@@ -7,23 +7,24 @@ export type Incentivo = {
   meta: number,
   restaurante_ref: string,
   status: boolean,
-  data_expiracao: Date,
+  data_expiracao: string,
   ganhador_nome?: string,
   ganhador_ref?: string,
   data_adicao: Date
 }
 
-export type IncentivoFirestorePostRequestBody = Omit<Incentivo, "id" | "ganhador_nome" | "ganhador_ref" | "restaurante_ref"> & {
-  restaurante_ref: DocumentReference
+export type IncentivoFirestorePostRequestBody = Omit<Incentivo, "id" | "ganhador_nome" | "ganhador_ref" | "restaurante_ref" | "data_expiracao"> & {
+  restaurante_ref: DocumentReference,
+  data_expiracao: Date
 }
 
-export type IncentivoUpdateRequestBody = Pick<Incentivo, "data_expiracao" | "descricao" | "valor_incentivo" | "meta" | "ganhador_nome" | "status" | "ganhador_ref">
-
-export type IncentivoFirestoreUpdateRequestBody = Omit<IncentivoUpdateRequestBody, "ganhador_ref"> & {
-  ganhador_ref: DocumentReference
+export type IncentivoFirestoreUpdateRequestBody = Pick<Incentivo, "valor_incentivo" | "meta" | "descricao" | "ganhador_nome" | "status"> & {
+  ganhador_ref: DocumentReference,
+  data_expiracao: Date
 }
 
-// atributos que ficará salvo no funcionário
+// POR PARTE DO FUNCIONÁRIO
+// atributos que ficará salvo no funcionário incentivo
 export type IncentivoFuncionario = {
   contador: number,
   incentivo_ref: string,

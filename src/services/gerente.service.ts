@@ -1,6 +1,7 @@
+import { Transaction } from "firebase-admin/firestore";
 import { db } from "../config/firebase";
 import { COLLECTIONS } from "../enum/collections.enum";
-import { Gerente, GerenteFirestorePostRequestBody } from "../model/gerente.model";
+import { Gerente, GerenteFirestorePostRequestBody, GerentePostRequestBody } from "../model/gerente.model";
 import { criptografarSenha, verificarSenha } from "../util/bcrypt.util";
 import { docToObject, idToDocumentRef } from "../util/firebase.util";
 import { PatternService } from "./pattern.service";
@@ -70,6 +71,17 @@ class GerenteService extends PatternService {
     await this.setup(idEmpesa).add(gerenteParaSalvar);
   }
 
+  public async criar_EmTransacao(transaction: Transaction, idEmpesa: string, body: GerentePostRequestBody) {
+    const gerenteParaSalvar: GerenteFirestorePostRequestBody = {
+      ...body,
+      senha: criptografarSenha(body.senha),
+      restaurante_ref: idToDocumentRef(idEmpesa, COLLECTIONS.RESTAURANTES),
+      data_criacao: new Date(),
+      ativo: true
+    }
+    transaction.set(this.setup(idEmpesa).doc(), gerenteParaSalvar)
+  }
+
   public async excluir(idEmpresa: string, idGerente: string) {
     await this.setup(idEmpresa).doc(idGerente).delete()
   }
@@ -78,6 +90,13 @@ class GerenteService extends PatternService {
     await this.setup(idEmpesa).doc(idGerente).update({
       ...payload
     })
+    
+    if (payload.senha) {
+      await this.setup(idEmpesa).doc(idGerente).update({
+        senha: criptografarSenha(payload.senha)
+      })
+    }
+    
   }
 }
 

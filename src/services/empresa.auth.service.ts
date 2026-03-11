@@ -3,6 +3,8 @@ import { COLLECTIONS } from "../enum/collections.enum";
 import { Restaurante, RestaurantePostRequestBody } from "../model/restaurante.model";
 import { PatternService } from "./pattern.service";
 import { Role } from "../types/roles.type";
+import { mensalidadeService } from "./mensalidade.service";
+import { gerenteService } from "./gerente.service";
 
 class EmpresaAuthService extends PatternService {
   
@@ -10,12 +12,12 @@ class EmpresaAuthService extends PatternService {
     super(COLLECTIONS.RESTAURANTES)
   }
 
-  async criar(body: RestaurantePostRequestBody, senha: string){
+  async criar(body: RestaurantePostRequestBody){
     const userToSave: CreateRequest = {
       disabled: false,
       displayName: body.nome_fantasia,
       email: await this.gerarEmail(body.nome_fantasia),
-      password: senha
+      password: body.senha
     }
 
     await getAuth().createUser(userToSave)
@@ -31,14 +33,23 @@ class EmpresaAuthService extends PatternService {
         pushTokens: []
       }
 
-      await this.setup().add(restauranteParaSalvar);
+      await this.firestore_db().runTransaction(async (transaction) => {
+        const restRef = this.setup().doc(userRecord.uid)
+        transaction.set(restRef, restauranteParaSalvar);
+        // criar primeira mensalidade em transação
+        // ....
+        mensalidadeService.criar_EmTransacao(transaction, restRef.id, {
+          data_vencimento: new Date().toISOString(),
+          valor: body.valor,
+          link: body.link_pagamento
+        })
 
-      // criar primeira mensalidade em transação
-      // ....
-
-
-      // criar cliente no abacate pay e primeira cobrança de mensalidade....
-      // ...EM BREVE
+        gerenteService.criar_EmTransacao(transaction, restRef.id, {
+          nome: 'Usuario1',
+          senha: '1234',
+          tipo: 'GERENTE'
+        })
+      })
     })
 
   }

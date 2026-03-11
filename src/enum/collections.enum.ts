@@ -3,6 +3,8 @@ export enum COLLECTIONS {
   GERENTES = "gerentes",
   FUNCIONARIOS = "funcionarios",
   MENU = "menu",
-  PAGAMENTOS = "pagamentos"
-
+  PAGAMENTOS = "pagamentos",
+  INCENTIVOS = "incentivos",
+  FUNCIONARIOS_INCENTIVO = "funcionarios_incentivos",
+  MENSALIDADES = "mensalidades"
 }

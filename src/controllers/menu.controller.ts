@@ -20,7 +20,7 @@ async function adicionar(req: Request, res: Response) {
   try {
     const empresaId = req.user?.uid!
     const body = req.body as ItemMenu
-    const resultado = await menuService.adicionar(empresaId, body);
+    await menuService.adicionar(empresaId, body);
     res.sendStatus(201)
   } catch (error: any) {
     res.status(400).json({ message: error.message })

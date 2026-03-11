@@ -7,4 +7,8 @@ export type Restaurante = {
   data_criacao: Date,
 }
 
-export type RestaurantePostRequestBody = Omit<Restaurante, "id" | "data_criacao" | "ativo" | "email">
+export type RestaurantePostRequestBody = Omit<Restaurante, "id" | "data_criacao" | "ativo" | "email"> & {
+  senha: string;
+  valor: number;
+  link_pagamento: string
+}
