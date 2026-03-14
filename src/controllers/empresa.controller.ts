@@ -16,4 +16,15 @@ async function encontrar(req: Request, res: Response) {
 }
 empresaRouter.get("/encontrar", authMiddleware('manager'), encontrar)
 
+async function listar(req: Request, res: Response) {
+  try {
+    const result = await empresaService.listar();
+    res.status(200).json(result)
+  } catch (error: any) {
+    console.error(error)
+    res.status(400).json({ message: error.message })
+  }
+}
+empresaRouter.get("/listar", authMiddleware('admin'), listar)
+
 export default empresaRouter
