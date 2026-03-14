@@ -30,7 +30,10 @@ class EmpresaAuthService extends PatternService {
         email: userRecord.email || '',
         ativo: true,
         data_criacao: new Date(),
-        pushTokens: []
+        pushTokens: [],
+        valor_plano: body.valor_plano,
+        dia_pagamento: body.dia_pagamento,
+        link_padrao: body.link_padrao
       }
 
       await this.firestore_db().runTransaction(async (transaction) => {
@@ -40,8 +43,8 @@ class EmpresaAuthService extends PatternService {
         // ....
         mensalidadeService.criar_EmTransacao(transaction, restRef.id, {
           data_vencimento: new Date().toISOString(),
-          valor: body.valor,
-          link: body.link_pagamento
+          valor: body.valor_plano,
+          link: body.link_padrao
         })
 
         gerenteService.criar_EmTransacao(transaction, restRef.id, {
