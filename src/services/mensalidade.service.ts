@@ -63,6 +63,13 @@ class MensalidadeService extends PatternService {
       ...payload
     });
   }
+
+  public async confirmarPagamento(id: string) {
+    await this.setup().doc(id).update(<Mensalidade>{
+      status: 'PAGO',
+      data_pagamento: new Date()
+    })
+  }
 }
 
 export const mensalidadeService = new MensalidadeService();
