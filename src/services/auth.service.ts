@@ -78,6 +78,12 @@ class AuthService extends PatternService {
       });
   }
 
+  async atualizarAtividadeEmpresa(uid: string, status: boolean) {
+    await getAuth().updateUser(uid, {
+      disabled: status,
+    })
+  }
+
   public async gerarTokenAdmin({email, senha}: {email: string, senha: string}) {
     const API_KEY = process.env.FIREBASE_API_KEY;
     const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`;
@@ -88,7 +94,6 @@ class AuthService extends PatternService {
       returnSecureToken: true,
     });
 
-    // Esse idToken é o que você usaria no Front-end
     return response.data.idToken;
   }
 
