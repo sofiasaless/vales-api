@@ -16,6 +16,17 @@ class EmpresaService extends PatternService {
     return docToObject<Restaurante>(resultado.id, resultado.data()!);
   }
 
+  public async listar(){
+    const resultado = await this.setup().get()
+    if (resultado.empty) throw new Error("Nenhuma empresa encontrada");
+
+    const empresas = resultado.docs.map((doc) => {
+      return docToObject<Restaurante>(doc.id, doc.data()!);
+    })
+
+    return empresas
+  }
+
 }
 
 export const empresaService = new EmpresaService()
