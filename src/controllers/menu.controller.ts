@@ -5,30 +5,30 @@ import { CreateMenuItemDto } from "../services/menu/dto/createMenuItem.dto";
 
 const menuRouter = Router();
 
-async function listar(req: Request, res: Response) {
+async function findMany(req: Request, res: Response) {
   try {
-    const empresaId = req.user?.uid!;
-    const resultado = await menuService.list(empresaId);
-    res.status(200).json(resultado);
+    const enterpriseId = req.user?.uid!;
+    const result = await menuService.list(enterpriseId);
+    res.status(200).json(result);
   } catch (error: any) {
     res.status(400).json({ message: error.message });
   }
 }
-menuRouter.get("/listar", authMiddleware("manager"), listar);
+menuRouter.get("/listar", authMiddleware("manager"), findMany);
 
-async function adicionar(req: Request, res: Response) {
+async function createOne(req: Request, res: Response) {
   try {
-    const empresaId = req.user?.uid!;
+    const enterpriseId = req.user?.uid!;
     const body = req.body as CreateMenuItemDto;
-    await menuService.create(empresaId, body);
+    await menuService.create(enterpriseId, body);
     res.sendStatus(201);
   } catch (error: any) {
     res.status(400).json({ message: error.message });
   }
 }
-menuRouter.post("/adicionar", authMiddleware("manager"), adicionar);
+menuRouter.post("/adicionar", authMiddleware("manager"), createOne);
 
-async function atualizar(req: Request, res: Response) {
+async function updateOne(req: Request, res: Response) {
   try {
     const itemId = req.params.id as string;
     const body = req.body as CreateMenuItemDto;
@@ -38,9 +38,9 @@ async function atualizar(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-menuRouter.put("/atualizar/:id", authMiddleware("manager"), atualizar);
+menuRouter.put("/atualizar/:id", authMiddleware("manager"), updateOne);
 
-async function remover(req: Request, res: Response) {
+async function deleteOne(req: Request, res: Response) {
   try {
     const itemId = req.params.id as string;
     await menuService.delete(itemId);
@@ -49,6 +49,6 @@ async function remover(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-menuRouter.delete("/remover/:id", authMiddleware("manager"), remover);
+menuRouter.delete("/remover/:id", authMiddleware("manager"), deleteOne);
 
 export default menuRouter;

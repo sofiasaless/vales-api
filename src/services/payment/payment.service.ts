@@ -1,7 +1,6 @@
 import { FieldValue, Transaction } from "firebase-admin/firestore";
 import { db } from "../../config/firebase";
 import { COLLECTIONS } from "../../enum/collections.enum";
-import { Pagamento } from "../../model/pagamento.model";
 import { docToObject, idToDocumentRef } from "../../util/firebase.util";
 import { PatternService } from "../common/pattern.service";
 import { CreatePaymentDto } from "./dto/createPayment.dto";

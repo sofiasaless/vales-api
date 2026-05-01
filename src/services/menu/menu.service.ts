@@ -1,9 +1,5 @@
 import { MenuItemEntity } from "../../entities/menu.entity";
 import { COLLECTIONS } from "../../enum/collections.enum";
-import {
-  ItemMenu,
-  ItemMenuFirestorePostRequestBody,
-} from "../../model/menu.type";
 import { docToObject, idToDocumentRef } from "../../util/firebase.util";
 import { PatternService } from "../common/pattern.service";
 import { CreateMenuItemDto } from "./dto/createMenuItem.dto";

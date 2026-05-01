@@ -1,6 +1,5 @@
 import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { COLLECTIONS } from "../../enum/collections.enum";
-import { Funcionario } from "../../model/funcionario.model";
 import { docToObject, idToDocumentRef } from "../../util/firebase.util";
 import { PatternService } from "../common/pattern.service";
 import { db } from "../../config/firebase";
@@ -45,7 +44,7 @@ class EmployeeService extends PatternService {
       .get();
 
     const employees = snapShot.docs.map((doc) => {
-      return docToObject<Funcionario>(doc.id, doc.data()!);
+      return docToObject<EmployeeEntity>(doc.id, doc.data()!);
     });
 
     return employees;

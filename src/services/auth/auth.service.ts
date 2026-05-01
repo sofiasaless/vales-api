@@ -1,10 +1,6 @@
 import axios from "axios";
 import dotenv from "dotenv";
 import { COLLECTIONS } from "../../enum/collections.enum";
-import {
-  Restaurante,
-  RestaurantePostRequestBody,
-} from "../../model/restaurante.model";
 import { CreateAuthUserDto } from "../auth/dto/authUserDto";
 import { FirebaseAuthService } from "../auth/firebaseAuth.service";
 import { PatternService } from "../common/pattern.service";

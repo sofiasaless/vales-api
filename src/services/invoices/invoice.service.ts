@@ -1,10 +1,6 @@
 import { Transaction } from "firebase-admin/firestore";
 import { COLLECTIONS } from "../../enum/collections.enum";
-import {
-  Mensalidade,
-  MensalidadeFirestorePostRequestBody,
-  MensalidadePostRequestBody,
-} from "../../model/mensalidade.model";
+
 import { docToObject, idToDocumentRef } from "../../util/firebase.util";
 import { PatternService } from "../common/pattern.service";
 import { InvoiceEntity } from "../../entities/invoice.entity";
