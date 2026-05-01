@@ -1,9 +1,9 @@
 import admin from "firebase-admin";
-import { db } from "../config/firebase";
+import { db } from "../../config/firebase";
 
 // definindo uma classe padrão que todos os services irão extender pra evitar repetição de código
 export abstract class PatternService {
-  protected COLLECTION_NAME: string
+  protected COLLECTION_NAME: string;
 
   constructor(collection_name: string) {
     this.COLLECTION_NAME = collection_name;
@@ -23,7 +23,6 @@ export abstract class PatternService {
   }
 
   protected getRef(id: string, idEmpresa?: string) {
-    return this.setup().doc(id)
+    return this.setup().doc(id);
   }
-
 }

@@ -7,8 +7,12 @@ import {
 } from "../../model/restaurante.model";
 import { CreateAuthUserDto } from "../auth/dto/authUserDto";
 import { FirebaseAuthService } from "../auth/firebaseAuth.service";
-import { empresaService } from "../empresa/empresa.service";
-import { PatternService } from "../pattern.service";
+import { PatternService } from "../common/pattern.service";
+import { enterpriseService } from "../enterprise/enterprise.service";
+import {
+  CreateAuthEnterpriseDto,
+  CreateEnterpriseDto,
+} from "../enterprise/dto/createEnterpriseDto";
 dotenv.config();
 
 class AuthService extends PatternService {
@@ -18,7 +22,7 @@ class AuthService extends PatternService {
     super(COLLECTIONS.RESTAURANTES);
   }
 
-  async createEnterprise(body: RestaurantePostRequestBody) {
+  async createEnterprise(body: CreateAuthEnterpriseDto) {
     const userRecord = await this.firebaseAuthService.createAuthUser({
       email: await this.firebaseAuthService.generateEmailByName(
         body.nome_fantasia,
@@ -31,18 +35,15 @@ class AuthService extends PatternService {
       role: "manager",
     });
 
-    const enterpriseToSave: Restaurante = {
+    const enterpriseToSave: CreateEnterpriseDto = {
       nome_fantasia: body.nome_fantasia,
       email: userRecord.email || "",
-      ativo: true,
-      data_criacao: new Date(),
-      pushTokens: [],
       valor_plano: body.valor_plano,
       dia_pagamento: body.dia_pagamento,
       link_padrao: body.link_padrao,
     };
 
-    await empresaService.create(enterpriseToSave, userRecord.uid);
+    await enterpriseService.create(enterpriseToSave, userRecord.uid);
   }
 
   async createAdminUser(body: CreateAuthUserDto) {

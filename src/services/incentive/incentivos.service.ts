@@ -1,13 +1,13 @@
-import { db } from "../config/firebase";
-import { COLLECTIONS } from "../enum/collections.enum";
+import { db } from "../../config/firebase";
+import { COLLECTIONS } from "../../enum/collections.enum";
 import {
   Incentivo,
-  IncentivoFirestorePostRequestBody
-} from "../model/incentivo.model";
-import { docToObject, idToDocumentRef } from "../util/firebase.util";
+  IncentivoFirestorePostRequestBody,
+} from "../../model/incentivo.model";
+import { docToObject, idToDocumentRef } from "../../util/firebase.util";
 import { funcionarioIncentivoService } from "./funcionario.incentivo.service";
-import { funcionarioService } from "./funcionario.service";
-import { PatternService } from "./pattern.service";
+import { PatternService } from "../common/pattern.service";
+import { employeeService } from "../employee/employee.service";
 
 class IncentivoService extends PatternService {
   constructor() {
@@ -28,7 +28,7 @@ class IncentivoService extends PatternService {
       transaction.set(incentivoRef, incentivoParaSalvar);
 
       // criando os documentos dos funcionários
-      const funcionarios = await funcionarioService.listar(idEmpresa);
+      const funcionarios = await employeeService.list(idEmpresa);
       funcionarios.map((f) => {
         funcionarioIncentivoService.criar(transaction, incentivoRef, f);
       });
@@ -53,7 +53,6 @@ class IncentivoService extends PatternService {
 
     return resultados;
   }
-
 }
 
 export const incentivoService = new IncentivoService();
