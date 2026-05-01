@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { authMiddleware } from "../auth/authMiddleware";
+import { authMiddleware } from "../middlewares/authMiddleware";
 import { menuService } from "../services/menu/menu.service";
 import { CreateMenuItemDto } from "../services/menu/dto/createMenuItem.dto";
 

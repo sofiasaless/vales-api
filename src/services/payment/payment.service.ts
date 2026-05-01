@@ -16,9 +16,9 @@ class PaymentService extends PatternService {
   public async create(
     enterpriseId: string,
     employeeId: string,
-    pagamento: CreatePaymentDto,
+    body: CreatePaymentDto,
   ) {
-    const formattedVocuhers: Voucher[] = pagamento.vales.map((v) => {
+    const formattedVocuhers: Voucher[] = body.vales.map((v) => {
       return {
         ...v,
         data_adicao: new Date(v.data_adicao),
@@ -29,9 +29,9 @@ class PaymentService extends PatternService {
     });
 
     const paymentToSave: PaymentEntity = {
-      ...pagamento,
+      ...body,
       vales: formattedVocuhers,
-      valor_pago: pagamento.valor_pago < 0 ? 0 : pagamento.valor_pago,
+      valor_pago: body.valor_pago < 0 ? 0 : body.valor_pago,
       funcionario_ref: idToDocumentRef(employeeId, COLLECTIONS.FUNCIONARIOS),
       restaurante_ref: idToDocumentRef(enterpriseId, COLLECTIONS.RESTAURANTES),
       data_pagamento: new Date(),
@@ -46,12 +46,12 @@ class PaymentService extends PatternService {
         incentivo: [],
       });
 
-      if (pagamento.valor_pago < 0) {
+      if (body.valor_pago < 0) {
         const pendingVoucherToSave: Voucher = {
           id: crypto.randomUUID(),
           descricao: "Negativo último pagamento",
           quantidade: 1,
-          preco_unit: pagamento.valor_pago * -1,
+          preco_unit: body.valor_pago * -1,
           data_adicao: new Date(),
         };
 

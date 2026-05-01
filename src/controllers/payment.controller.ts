@@ -1,10 +1,12 @@
 import { Request, Response, Router } from "express";
-import { authMiddleware } from "../auth/authMiddleware";
+import { authMiddleware } from "../middlewares/authMiddleware";
 import { paymentService } from "../services/payment/payment.service";
 import { CreatePaymentDto } from "../services/payment/dto/createPayment.dto";
 import { ListPaymentsWithFilterDto } from "../services/payment/dto/listPaymentsWithFilter.dto";
+import { validationMiddleware } from "../middlewares/validateDtos.middleware";
 
 const paymentRouter = Router();
+paymentRouter.use(authMiddleware("manager"));
 
 async function createOne(req: Request, res: Response) {
   try {
@@ -17,7 +19,11 @@ async function createOne(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-paymentRouter.post("/pagar/:id", authMiddleware("manager"), createOne);
+paymentRouter.post(
+  "/pagar/:id",
+  validationMiddleware(CreatePaymentDto),
+  createOne,
+);
 
 async function findMany(req: Request, res: Response) {
   try {
@@ -29,6 +35,10 @@ async function findMany(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-paymentRouter.post("/listar/:id", authMiddleware("manager"), findMany);
+paymentRouter.post(
+  "/listar/:id",
+  validationMiddleware(ListPaymentsWithFilterDto),
+  findMany,
+);
 
 export default paymentRouter;

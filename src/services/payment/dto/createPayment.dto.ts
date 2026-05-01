@@ -3,6 +3,7 @@ import {
   IsNumber,
   IsOptional,
   IsPositive,
+  IsString,
   IsUrl,
 } from "class-validator";
 import { Voucher } from "../../../entities/employee.entity";
@@ -18,7 +19,8 @@ export class CreatePaymentDto {
   @IsArray()
   vales: Voucher[];
 
-  // incentivo: GanhosIncentivo[];
+  @IsArray()
+  incentivo: [];
 
   @IsUrl()
   @IsOptional()

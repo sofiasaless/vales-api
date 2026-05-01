@@ -1,9 +1,10 @@
 import { Request, Response, Router } from "express";
-import { authMiddleware } from "../auth/authMiddleware";
+import { authMiddleware } from "../middlewares/authMiddleware";
 import { incentivoService } from "../services/incentive/incentivos.service";
 import { Incentivo } from "../model/incentivo.model";
 
 const incentivoRouter = Router();
+incentivoRouter.use(authMiddleware("manager"));
 
 async function criar(req: Request, res: Response) {
   try {
@@ -15,7 +16,7 @@ async function criar(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-incentivoRouter.post("/criar", authMiddleware("manager"), criar);
+incentivoRouter.post("/criar", criar);
 
 async function listar(req: Request, res: Response) {
   try {
@@ -26,4 +27,4 @@ async function listar(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-incentivoRouter.get("/listar", authMiddleware("manager"), listar);
+incentivoRouter.get("/listar", listar);

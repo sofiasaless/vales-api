@@ -1,12 +1,12 @@
 import express from "express";
 import { corsConfig } from "./config/cors";
-import empresaRouter from "./controllers/enterprise.controller";
-import funcionarioRouter from "./controllers/employee.controller";
-import gerenteRouter from "./controllers/internUser.controller";
 import menuRouter from "./controllers/menu.controller";
-import pagamentoRouter from "./controllers/pagamento.controller";
-import mensalidadeRouter from "./controllers/mensalidade.controller";
 import authRoutes from "./controllers/auth.controller";
+import paymentRouter from "./controllers/payment.controller";
+import invoiceRouter from "./controllers/invoice.controller";
+import internUserRouter from "./controllers/internUser.controller";
+import enterpriseRouter from "./controllers/enterprise.controller";
+import employeeRouter from "./controllers/employee.controller";
 
 const app = express();
 
@@ -18,11 +18,11 @@ app.get("/health", (req, res) => res.json({ ok: true }));
 
 // rotas
 app.use("/api/auth", authRoutes);
-app.use("/api/gerente", gerenteRouter);
-app.use("/api/empresa", empresaRouter);
-app.use("/api/funcionario", funcionarioRouter);
+app.use("/api/gerente", internUserRouter);
+app.use("/api/empresa", enterpriseRouter);
+app.use("/api/funcionario", employeeRouter);
 app.use("/api/menu", menuRouter);
-app.use("/api/pagamento", pagamentoRouter);
-app.use("/api/mensalidade", mensalidadeRouter);
+app.use("/api/pagamento", paymentRouter);
+app.use("/api/mensalidade", invoiceRouter);
 
 export default app;

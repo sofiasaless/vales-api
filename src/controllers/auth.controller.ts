@@ -1,10 +1,10 @@
 import { HttpStatusCode } from "axios";
 import { Request, Response, Router } from "express";
-import { authMiddleware } from "../auth/authMiddleware";
-import { RestaurantePostRequestBody } from "../model/restaurante.model";
+import { authMiddleware } from "../middlewares/authMiddleware";
 import { authService } from "../services/auth/auth.service";
 import { CreateAuthUserDto } from "../services/auth/dto/authUserDto";
 import { Role } from "../types/roles.type";
+import { CreateAuthEnterpriseDto } from "../services/enterprise/dto/createEnterpriseDto";
 
 const authRoutes = Router();
 
@@ -23,7 +23,7 @@ authRoutes.put("/claims/:uid/:role", authMiddleware("admin"), definirClaim);
 
 async function criar(req: Request, res: Response) {
   try {
-    const body = req.body as RestaurantePostRequestBody;
+    const body = req.body as CreateAuthEnterpriseDto;
     await authService.createEnterprise(body);
     res.sendStatus(HttpStatusCode.Created);
   } catch (error: any) {

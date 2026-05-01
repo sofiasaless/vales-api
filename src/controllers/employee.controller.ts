@@ -1,14 +1,16 @@
 import { Request, Response, Router } from "express";
-import { authMiddleware } from "../auth/authMiddleware";
-import { employeeService } from "../services/employee/employee.service";
-import { CreateEmployeeDto } from "../services/employee/dto/createEmployee.dto";
+import { authMiddleware } from "../middlewares/authMiddleware";
+import { validationMiddleware } from "../middlewares/validateDtos.middleware";
 import {
   AddEmployeeMultipleVouchersDto,
   AddEmployeeSingleVouchersDto,
 } from "../services/employee/dto/addEmployeeVoucher.dto";
+import { CreateEmployeeDto } from "../services/employee/dto/createEmployee.dto";
 import { UpdateEmployeeDto } from "../services/employee/dto/updateEmployee.dto";
+import { employeeService } from "../services/employee/employee.service";
 
 const employeeRouter = Router();
+employeeRouter.use(authMiddleware("manager"));
 
 async function createOne(req: Request, res: Response) {
   try {
@@ -20,7 +22,11 @@ async function createOne(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-employeeRouter.post("/criar", authMiddleware("manager"), createOne);
+employeeRouter.post(
+  "/criar",
+  validationMiddleware(CreateEmployeeDto),
+  createOne,
+);
 
 async function findMany(req: Request, res: Response) {
   try {
@@ -31,7 +37,7 @@ async function findMany(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-employeeRouter.get("/listar", authMiddleware("manager"), findMany);
+employeeRouter.get("/listar", findMany);
 
 async function encontrar(req: Request, res: Response) {
   try {
@@ -42,7 +48,7 @@ async function encontrar(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-employeeRouter.get("/encontrar/:id", authMiddleware("manager"), encontrar);
+employeeRouter.get("/encontrar/:id", encontrar);
 
 async function createOneVoucher(req: Request, res: Response) {
   try {
@@ -56,7 +62,7 @@ async function createOneVoucher(req: Request, res: Response) {
 }
 employeeRouter.put(
   "/vale/adicionar/:id",
-  authMiddleware("manager"),
+  validationMiddleware(AddEmployeeSingleVouchersDto),
   createOneVoucher,
 );
 
@@ -72,7 +78,7 @@ async function createManyVoucher(req: Request, res: Response) {
 }
 employeeRouter.put(
   "/vale/adicionar-multiplos/:id",
-  authMiddleware("manager"),
+  validationMiddleware(AddEmployeeMultipleVouchersDto),
   createManyVoucher,
 );
 
@@ -88,7 +94,7 @@ async function removeOneVoucher(req: Request, res: Response) {
 }
 employeeRouter.put(
   "/vale/remover/:id",
-  authMiddleware("manager"),
+  validationMiddleware(AddEmployeeSingleVouchersDto),
   removeOneVoucher,
 );
 
@@ -101,7 +107,7 @@ async function deleteOne(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-employeeRouter.delete("/excluir/:id", authMiddleware("manager"), deleteOne);
+employeeRouter.delete("/excluir/:id", deleteOne);
 
 async function updateOne(req: Request, res: Response) {
   try {
@@ -113,6 +119,10 @@ async function updateOne(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-employeeRouter.put("/atualizar/:id", authMiddleware("manager"), updateOne);
+employeeRouter.put(
+  "/atualizar/:id",
+  validationMiddleware(UpdateEmployeeDto),
+  updateOne,
+);
 
 export default employeeRouter;

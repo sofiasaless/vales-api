@@ -1,11 +1,12 @@
 import { Request, Response, Router } from "express";
-import { authMiddleware } from "../auth/authMiddleware";
+import { authMiddleware } from "../middlewares/authMiddleware";
 import { GerenteAuthPostRequestBody } from "../model/gerente.model";
 import { internUserService } from "../services/users/internUser.service";
 import { CreateInternUserDto } from "../services/users/dto/createInternUser.dto";
 import { UpdateInternUserDto } from "../services/users/dto/updateInternUser.dto";
 
 const internUserRouter = Router();
+internUserRouter.use(authMiddleware("manager"));
 
 async function findMany(req: Request, res: Response) {
   try {
@@ -16,7 +17,7 @@ async function findMany(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-internUserRouter.get("/listar", authMiddleware("manager"), findMany);
+internUserRouter.get("/listar", findMany);
 
 async function autenticate(req: Request, res: Response) {
   try {
@@ -32,7 +33,7 @@ async function autenticate(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-internUserRouter.post("/autenticar", authMiddleware("manager"), autenticate);
+internUserRouter.post("/autenticar", autenticate);
 
 async function findOne(req: Request, res: Response) {
   try {
@@ -44,7 +45,7 @@ async function findOne(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-internUserRouter.get("/encontrar/:id", authMiddleware("manager"), findOne);
+internUserRouter.get("/encontrar/:id", findOne);
 
 async function createOne(req: Request, res: Response) {
   try {
@@ -56,7 +57,7 @@ async function createOne(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-internUserRouter.post("/criar", authMiddleware("manager"), createOne);
+internUserRouter.post("/criar", createOne);
 
 async function deleteOne(req: Request, res: Response) {
   try {
@@ -68,7 +69,7 @@ async function deleteOne(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-internUserRouter.delete("/excluir/:id", authMiddleware("manager"), deleteOne);
+internUserRouter.delete("/excluir/:id", deleteOne);
 
 async function updateOne(req: Request, res: Response) {
   try {
@@ -81,6 +82,6 @@ async function updateOne(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-internUserRouter.put("/atualizar/:id", authMiddleware("manager"), updateOne);
+internUserRouter.put("/atualizar/:id", updateOne);
 
 export default internUserRouter;

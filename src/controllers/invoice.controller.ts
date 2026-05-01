@@ -1,11 +1,12 @@
-import { Request, Response, Router } from "express";
-import { authMiddleware } from "../auth/authMiddleware";
 import { HttpStatusCode } from "axios";
-import { invoiceService } from "../services/invoices/invoice.service";
+import { Request, Response, Router } from "express";
+import { authMiddleware } from "../middlewares/authMiddleware";
 import { CreateInvoiceDto } from "../services/invoices/dto/createInvoice.dto";
 import { UpdateInvoiceDto } from "../services/invoices/dto/updateInvoice.dto";
+import { invoiceService } from "../services/invoices/invoice.service";
 
 const invoiceRouter = Router();
+invoiceRouter.use(authMiddleware("manager"));
 
 async function createOne(req: Request, res: Response) {
   try {
@@ -17,11 +18,7 @@ async function createOne(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-invoiceRouter.post(
-  "/criar/:enterpriseId",
-  authMiddleware("manager"),
-  createOne,
-);
+invoiceRouter.post("/criar/:enterpriseId", createOne);
 
 async function findMany(req: Request, res: Response) {
   try {
@@ -37,7 +34,7 @@ async function findMany(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-invoiceRouter.get("/listar", authMiddleware("manager"), findMany);
+invoiceRouter.get("/listar", findMany);
 
 async function updateOne(req: Request, res: Response) {
   try {
@@ -49,7 +46,7 @@ async function updateOne(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-invoiceRouter.put("/atualizar/:id", authMiddleware("manager"), updateOne);
+invoiceRouter.put("/atualizar/:id", updateOne);
 
 async function confirmPayment(req: Request, res: Response) {
   try {
