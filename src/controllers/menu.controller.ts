@@ -2,8 +2,10 @@ import { Request, Response, Router } from "express";
 import { authMiddleware } from "../middlewares/authMiddleware";
 import { menuService } from "../services/menu/menu.service";
 import { CreateMenuItemDto } from "../services/menu/dto/createMenuItem.dto";
+import { validationMiddleware } from "../middlewares/validateDtos.middleware";
 
 const menuRouter = Router();
+menuRouter.use(authMiddleware("manager"));
 
 async function findMany(req: Request, res: Response) {
   try {
@@ -14,7 +16,7 @@ async function findMany(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-menuRouter.get("/listar", authMiddleware("manager"), findMany);
+menuRouter.get("/listar", findMany);
 
 async function createOne(req: Request, res: Response) {
   try {
@@ -26,7 +28,11 @@ async function createOne(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-menuRouter.post("/adicionar", authMiddleware("manager"), createOne);
+menuRouter.post(
+  "/adicionar",
+  validationMiddleware(CreateMenuItemDto),
+  createOne,
+);
 
 async function updateOne(req: Request, res: Response) {
   try {
@@ -38,7 +44,11 @@ async function updateOne(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-menuRouter.put("/atualizar/:id", authMiddleware("manager"), updateOne);
+menuRouter.put(
+  "/atualizar/:id",
+  validationMiddleware(CreateMenuItemDto),
+  updateOne,
+);
 
 async function deleteOne(req: Request, res: Response) {
   try {
@@ -49,6 +59,6 @@ async function deleteOne(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-menuRouter.delete("/remover/:id", authMiddleware("manager"), deleteOne);
+menuRouter.delete("/remover/:id", deleteOne);
 
 export default menuRouter;

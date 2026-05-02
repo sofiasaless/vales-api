@@ -11,7 +11,7 @@ export class CreateInternUserDto {
   @IsString()
   nome: string;
 
-  @IsEnum({ enum: InternUserTypes })
+  @IsEnum(InternUserTypes)
   tipo: InternUserTypes;
 
   @IsString()

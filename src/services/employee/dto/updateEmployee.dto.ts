@@ -27,7 +27,7 @@ export class UpdateEmployeeDto {
   @IsOptional()
   cargo: string;
 
-  @IsEnum({ enum: EmployeeTypes })
+  @IsEnum(EmployeeTypes)
   @IsOptional()
   tipo: EmployeeTypes;
 

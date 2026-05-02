@@ -8,6 +8,7 @@ import { hashService } from "../auth/hash.service";
 import { PatternService } from "../common/pattern.service";
 import { CreateInternUserDto } from "./dto/createInternUser.dto";
 import { UpdateInternUserDto } from "./dto/updateInternUser.dto";
+import { InternUserResponseDto } from "./dto/responseInternUser.dto";
 
 class InternUserService extends PatternService {
   constructor() {
@@ -49,7 +50,8 @@ class InternUserService extends PatternService {
     if (query.empty) return [];
 
     const internUsersFounded = query.docs.map((doc) => {
-      return docToObject<InternUserEntity>(doc.id, doc.data());
+      const { senha, ...data } = doc.data();
+      return docToObject<InternUserResponseDto>(doc.id, data);
     });
 
     return internUsersFounded;
@@ -69,7 +71,7 @@ class InternUserService extends PatternService {
     let obj: {
       resultado: boolean;
       mensagem: string;
-      usuario?: InternUserEntity;
+      usuario?: InternUserResponseDto;
     } = {
       mensagem: "",
       resultado: false,
@@ -79,10 +81,11 @@ class InternUserService extends PatternService {
     if (!hashService.verifyMatch(password, doc.senha)) {
       obj = { mensagem: "Senha incorreta", resultado: false };
     } else {
+      const { senha, ...internUserResponse } = doc;
       obj = {
         mensagem: "Autenticado com sucesso",
         resultado: true,
-        usuario: doc,
+        usuario: internUserResponse,
       };
     }
 
@@ -94,7 +97,7 @@ class InternUserService extends PatternService {
     if (!result.exists)
       throw new Error(`Usuário de id ${internUserId} não encontrado`);
 
-    return docToObject<InternUserEntity>(result.id, result.data()!);
+    return docToObject<InternUserResponseDto>(result.id, result.data()!);
   }
 
   public async create(enterpriseId: string, body: CreateInternUserDto) {

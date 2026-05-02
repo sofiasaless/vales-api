@@ -1,9 +1,10 @@
 import { Request, Response, Router } from "express";
 import { authMiddleware } from "../middlewares/authMiddleware";
-import { GerenteAuthPostRequestBody } from "../model/gerente.model";
-import { internUserService } from "../services/users/internUser.service";
+import { validationMiddleware } from "../middlewares/validateDtos.middleware";
 import { CreateInternUserDto } from "../services/users/dto/createInternUser.dto";
+import { LoginInternUserDto } from "../services/users/dto/loginInternUser.dto";
 import { UpdateInternUserDto } from "../services/users/dto/updateInternUser.dto";
+import { internUserService } from "../services/users/internUser.service";
 
 const internUserRouter = Router();
 internUserRouter.use(authMiddleware("manager"));
@@ -22,18 +23,22 @@ internUserRouter.get("/listar", findMany);
 async function autenticate(req: Request, res: Response) {
   try {
     const enterpriseId = req.user?.uid!;
-    const body = req.body as GerenteAuthPostRequestBody;
+    const { id, password } = req.body as LoginInternUserDto;
     const result = await internUserService.autenticate(
       enterpriseId,
-      body.id,
-      body.senha,
+      id,
+      password,
     );
     res.status(200).json(result);
   } catch (error: any) {
     res.status(400).json({ message: error.message });
   }
 }
-internUserRouter.post("/autenticar", autenticate);
+internUserRouter.post(
+  "/autenticar",
+  validationMiddleware(LoginInternUserDto),
+  autenticate,
+);
 
 async function findOne(req: Request, res: Response) {
   try {
@@ -57,7 +62,11 @@ async function createOne(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-internUserRouter.post("/criar", createOne);
+internUserRouter.post(
+  "/criar",
+  validationMiddleware(CreateInternUserDto),
+  createOne,
+);
 
 async function deleteOne(req: Request, res: Response) {
   try {
@@ -82,6 +91,10 @@ async function updateOne(req: Request, res: Response) {
     res.status(400).json({ message: error.message });
   }
 }
-internUserRouter.put("/atualizar/:id", updateOne);
+internUserRouter.put(
+  "/atualizar/:id",
+  validationMiddleware(UpdateInternUserDto),
+  updateOne,
+);
 
 export default internUserRouter;

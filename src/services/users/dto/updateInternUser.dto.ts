@@ -12,7 +12,7 @@ export class UpdateInternUserDto {
   @IsOptional()
   nome: string;
 
-  @IsEnum({ enum: InternUserTypes })
+  @IsEnum(InternUserTypes)
   @IsOptional()
   tipo: InternUserTypes;
 

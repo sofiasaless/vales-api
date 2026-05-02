@@ -27,14 +27,15 @@ export class CreateEmployeeDto {
   @IsString()
   cargo: string;
 
-  @IsEnum({ enum: EmployeeTypes })
+  @IsEnum(EmployeeTypes)
   tipo: EmployeeTypes;
 
+  @IsNumber()
   @IsOptional()
   dias_trabalhados_semanal?: number;
 
-  @IsOptional()
   @IsUrl()
+  @IsOptional()
   foto_url?: string;
 
   @IsDateString()
@@ -51,5 +52,6 @@ export class CreateEmployeeDto {
   segundo_dia_pagamento: number;
 
   @IsObject()
+  @IsOptional()
   contrato?: EmployeeContract;
 }
