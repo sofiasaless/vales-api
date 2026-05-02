@@ -1,26 +1,29 @@
-import { Funcionario, Vale } from "../model/funcionario.model";
+import { EmployeeEntity, Voucher } from "../entities/employee.entity";
+import { EmployeeTypes } from "../enum/employee.enum";
 
-export const calcularVale = (item: Vale): number => {
+export const calculateVale = (item: Voucher): number => {
   return item.preco_unit * item.quantidade;
 };
 
-export const calcularTotalDoVale = (items: Vale[] | undefined): number => {
+export const calculateTotalVouchers = (
+  items: Voucher[] | undefined,
+): number => {
   if (!items) return 0;
-  return items.reduce((total, item) => total + calcularVale(item), 0);
+  return items.reduce((total, item) => total + calculateVale(item), 0);
 };
 
-export const calcularSalarioPago = (funcionario: Funcionario) => {
-  const totalVoucher = calcularTotalDoVale(funcionario.vales);
-  const amount = calcularSalarioBase(funcionario) - totalVoucher
-  return amount
-}
+export const calculatePaidWage = (employee: EmployeeEntity) => {
+  const totalVoucher = calculateTotalVouchers(employee.vales);
+  const amount = calculateBaseWage(employee) - totalVoucher;
+  return amount;
+};
 
-export const calcularSalarioBase = (funcionario: Funcionario) => {
-  let salary = 0
-  if (funcionario.tipo === 'FIXO') {
-    salary = funcionario.salario / 2
+export const calculateBaseWage = (employee: EmployeeEntity) => {
+  let salary = 0;
+  if (employee.tipo === EmployeeTypes.PERMANENT) {
+    salary = employee.salario / 2;
   } else {
-    salary = funcionario.salario * (funcionario.dias_trabalhados_semanal || 1)
+    salary = employee.salario * (employee.dias_trabalhados_semanal || 1);
   }
-  return salary
-}
+  return salary;
+};
