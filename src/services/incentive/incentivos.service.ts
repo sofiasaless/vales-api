@@ -29,9 +29,9 @@ class IncentivoService extends PatternService {
 
       // criando os documentos dos funcionários
       const funcionarios = await employeeService.list(idEmpresa);
-      funcionarios.map((f) => {
-        funcionarioIncentivoService.criar(transaction, incentivoRef, f);
-      });
+      // funcionarios.map((f) => {
+      // funcionarioIncentivoService.criar(transaction, incentivoRef, f);
+      // });
     });
   }
 
