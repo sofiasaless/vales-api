@@ -40,6 +40,8 @@ class AuthService extends PatternService {
     };
 
     await enterpriseService.create(enterpriseToSave, userRecord.uid);
+
+    return userRecord;
   }
 
   async createAdminUser(body: CreateAuthUserDto) {

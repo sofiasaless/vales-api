@@ -1,10 +1,8 @@
 import bcrypt from "bcryptjs";
-import dotenv from "dotenv";
-dotenv.config();
 
 export class HashService {
   encode(value: string) {
-    return bcrypt.hashSync(value, process.env.BCRYPT_SALT);
+    return bcrypt.hashSync(value, 12);
   }
 
   verifyMatch(value: string, encodedValue: string) {
