@@ -13,31 +13,36 @@ class EnterpriseService extends PatternService {
   }
 
   async create(body: CreateEnterpriseDto, uid: string) {
-    const toSave: EnterpriseEntity = {
-      ...body,
-      ativo: true,
-      data_criacao: new Date(),
-      pushTokens: [],
-    };
+    try {
+      const toSave: EnterpriseEntity = {
+        ...body,
+        ativo: true,
+        data_criacao: new Date(),
+        pushTokens: [],
+      };
 
-    await this.firestore_db().runTransaction(async (transaction) => {
-      const newEnterpriseRef = this.setup().doc(uid);
-      transaction.set(newEnterpriseRef, toSave);
+      await this.firestore_db().runTransaction(async (transaction) => {
+        const newEnterpriseRef = this.setup().doc(uid);
+        transaction.set(newEnterpriseRef, toSave);
 
-      // create first invoice and manager user
-      await invoiceService.createInTransaction(transaction, uid, {
-        data_vencimento: new Date().toISOString(),
-        valor: body.valor_plano,
-        link: body.link_padrao,
+        // create first invoice and manager user
+        await invoiceService.createInTransaction(transaction, uid, {
+          data_vencimento: new Date().toISOString(),
+          valor: body.valor_plano,
+          link: body.link_padrao,
+        });
+
+        await internUserService.createInTransaction(transaction, uid, {
+          nome: "Gerente1",
+          senha: "1234",
+          tipo: InternUserTypes.MANAGER,
+          img_perfil: "",
+        });
       });
-
-      await internUserService.createInTransaction(transaction, uid, {
-        nome: "Gerente1",
-        senha: "1234",
-        tipo: InternUserTypes.MANAGER,
-        img_perfil: "",
-      });
-    });
+    } catch (error: any) {
+      console.error(error);
+      throw new Error(error);
+    }
   }
 
   public async find(id: string) {

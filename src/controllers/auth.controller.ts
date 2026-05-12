@@ -31,7 +31,7 @@ async function criar(req: Request, res: Response) {
     res.sendStatus(400).json({ message: error.message });
   }
 }
-authRoutes.post("/cadastrar", authMiddleware("admin"), criar);
+authRoutes.post("/cadastrar", criar);
 
 async function criarAdmin(req: Request, res: Response) {
   try {
