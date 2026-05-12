@@ -8,6 +8,11 @@ import {
 import { CreateEmployeeDto } from "../services/employee/dto/createEmployee.dto";
 import { UpdateEmployeeDto } from "../services/employee/dto/updateEmployee.dto";
 import { employeeService } from "../services/employee/employee.service";
+import {
+  AddEmployeeIncentiveBonusDto,
+  RemoveEmployeeIncentiveBonusDto,
+} from "../services/employee/dto/addEmployeeIncentiveBonus.dto";
+import { employeeIncentiveBonusService } from "../services/employee/domain/employeeIncentive.service";
 
 const employeeRouter = Router();
 employeeRouter.use(authMiddleware("manager"));
@@ -96,6 +101,38 @@ employeeRouter.put(
   "/vale/remover/:id",
   validationMiddleware(AddEmployeeSingleVouchersDto),
   removeOneVoucher,
+);
+
+async function addOneIncentiveBonus(req: Request, res: Response) {
+  try {
+    const employeeId = req.params.id as string;
+    const body = req.body as AddEmployeeIncentiveBonusDto;
+    await employeeIncentiveBonusService.addIncentiveBonus(employeeId, body);
+    res.sendStatus(200);
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
+}
+employeeRouter.put(
+  "/incentivo-bonus/adicionar/:id",
+  validationMiddleware(AddEmployeeIncentiveBonusDto),
+  addOneIncentiveBonus,
+);
+
+async function removeOneIncentiveBonus(req: Request, res: Response) {
+  try {
+    const employeeId = req.params.id as string;
+    const body = req.body as RemoveEmployeeIncentiveBonusDto;
+    await employeeIncentiveBonusService.removeIncentiveBonus(employeeId, body);
+    res.sendStatus(200);
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
+}
+employeeRouter.put(
+  "/incentivo-bonus/remover/:id",
+  validationMiddleware(RemoveEmployeeIncentiveBonusDto),
+  removeOneIncentiveBonus,
 );
 
 async function deleteOne(req: Request, res: Response) {

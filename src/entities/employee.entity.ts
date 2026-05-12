@@ -14,8 +14,11 @@ export type Voucher = {
 };
 
 export type IncentiveBonus = {
+  id: string;
   valor: number;
+  descricao?: string;
   incentivo_ref?: string;
+  data: string;
 };
 
 export interface AssinaturasContrato {
