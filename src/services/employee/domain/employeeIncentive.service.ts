@@ -32,10 +32,11 @@ export class EmployeeIncentiveService extends PatternService {
     employeeId: string,
     payload: RemoveEmployeeIncentiveBonusDto,
   ) {
+    const { ...plainObject } = payload;
     await this.setup()
       .doc(employeeId)
       .update({
-        incentivo: FieldValue.arrayRemove(payload),
+        incentivo: FieldValue.arrayRemove(plainObject),
       });
   }
 }

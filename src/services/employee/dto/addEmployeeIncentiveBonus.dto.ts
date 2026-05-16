@@ -23,4 +23,8 @@ export class AddEmployeeIncentiveBonusDto {
 export class RemoveEmployeeIncentiveBonusDto extends AddEmployeeIncentiveBonusDto {
   @IsUUID()
   id: string;
+
+  @IsOptional()
+  @IsString()
+  data?: string;
 }

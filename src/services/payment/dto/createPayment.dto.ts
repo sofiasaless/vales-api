@@ -6,7 +6,7 @@ import {
   IsString,
   IsUrl,
 } from "class-validator";
-import { Voucher } from "../../../entities/employee.entity";
+import { IncentiveBonus, Voucher } from "../../../entities/employee.entity";
 
 export class CreatePaymentDto {
   @IsNumber()
@@ -20,7 +20,7 @@ export class CreatePaymentDto {
   vales: Voucher[];
 
   @IsArray()
-  incentivo: [];
+  incentivo: IncentiveBonus[];
 
   @IsUrl()
   @IsOptional()

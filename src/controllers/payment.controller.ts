@@ -16,6 +16,7 @@ async function createOne(req: Request, res: Response) {
     await paymentService.create(enterpriseId, employeeId, body);
     res.sendStatus(200);
   } catch (error: any) {
+    console.error(error);
     res.status(400).json({ message: error.message });
   }
 }

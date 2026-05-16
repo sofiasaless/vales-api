@@ -11,6 +11,7 @@ export const validationMiddleware = (dtoClass: any) => {
       forbidNonWhitelisted: true,
     }).then((errors) => {
       if (errors.length > 0) {
+        console.error("Error ao validar o body ", JSON.stringify(errors));
         res.status(400).json(errors);
       } else {
         req.body = output;
