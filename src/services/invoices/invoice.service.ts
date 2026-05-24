@@ -70,9 +70,10 @@ class InvoiceService extends PatternService {
       });
   }
 
-  public async confirmPayment(id: string) {
+  public async receivePayment(id: string, proofPicutre: string) {
     await this.setup().doc(id).update({
-      status: InvoiceStatus.PAID,
+      status: InvoiceStatus.ANALYSIS,
+      comprovante: proofPicutre,
       data_pagamento: new Date(),
     });
   }

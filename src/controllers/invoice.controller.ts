@@ -5,6 +5,7 @@ import { CreateInvoiceDto } from "../services/invoices/dto/createInvoice.dto";
 import { UpdateInvoiceDto } from "../services/invoices/dto/updateInvoice.dto";
 import { invoiceService } from "../services/invoices/invoice.service";
 import { validationMiddleware } from "../middlewares/validateDtos.middleware";
+import { InvoiceStatus } from "../enum/invoice.enum";
 
 const invoiceRouter = Router();
 invoiceRouter.use(authMiddleware("manager"));
@@ -57,19 +58,37 @@ invoiceRouter.put(
   updateOne,
 );
 
-async function confirmPayment(req: Request, res: Response) {
+async function sendPayment(req: Request, res: Response) {
   try {
     const invoiceId = req.params.id as string;
-    await invoiceService.confirmPayment(invoiceId);
-    res.sendStatus(HttpStatusCode.Ok);
+    const body = req.body as UpdateInvoiceDto;
+    await invoiceService.receivePayment(invoiceId, body.comprovante);
+    res.sendStatus(200);
   } catch (error: any) {
     res.status(400).json({ message: error.message });
   }
 }
 invoiceRouter.put(
-  "/confirmar-pagamento/:id",
-  authMiddleware("admin"),
-  confirmPayment,
+  "/enviar-pagamento/:id",
+  validationMiddleware(UpdateInvoiceDto),
+  sendPayment,
 );
+
+// async function confirmPayment(req: Request, res: Response) {
+//   try {
+//     const invoiceId = req.params.id as string;
+//     await invoiceService.updatePayment(invoiceId, {
+//       status: InvoiceStatus.PAID,
+//     });
+//     res.sendStatus(HttpStatusCode.Ok);
+//   } catch (error: any) {
+//     res.status(400).json({ message: error.message });
+//   }
+// }
+// invoiceRouter.put(
+//   "/confirmar-pagamento/:id",
+//   authMiddleware("admin"),
+//   confirmPayment,
+// );
 
 export default invoiceRouter;
