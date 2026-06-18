@@ -1,5 +1,5 @@
 import { DocumentReference } from "firebase-admin/firestore";
-import { EmployeeTypes } from "../enum/employee.enum";
+import { EmployeeStatus, EmployeeTypes } from "../enum/employee.enum";
 import { BaseEntity } from "./common/base.entity";
 import { InternUserEntity } from "./internUser.entity";
 
@@ -48,4 +48,6 @@ export class EmployeeEntity extends BaseEntity {
   restaurante_ref: string | DocumentReference;
   data_cadastro: Date;
   contrato?: EmployeeContract;
+  arquivadoEm?: Date;
+  status: EmployeeStatus;
 }

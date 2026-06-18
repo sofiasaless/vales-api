@@ -7,7 +7,7 @@ import {
   IsString,
   IsUrl,
 } from "class-validator";
-import { EmployeeTypes } from "../../../enum/employee.enum";
+import { EmployeeStatus, EmployeeTypes } from "../../../enum/employee.enum";
 
 export class UpdateEmployeeDto {
   @IsString()
@@ -54,4 +54,11 @@ export class UpdateEmployeeDto {
   @IsNumber()
   @IsOptional()
   segundo_dia_pagamento: number;
+
+  @IsEnum(EmployeeStatus)
+  @IsOptional()
+  status: string;
+
+  @IsOptional()
+  arquivadoEm?: Date | null;
 }

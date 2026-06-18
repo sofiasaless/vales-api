@@ -13,6 +13,7 @@ import {
   RemoveEmployeeIncentiveBonusDto,
 } from "../services/employee/dto/addEmployeeIncentiveBonus.dto";
 import { employeeIncentiveBonusService } from "../services/employee/domain/employeeIncentive.service";
+import { EmployeeStatus } from "../enum/employee.enum";
 
 const employeeRouter = Router();
 employeeRouter.use(authMiddleware("manager"));
@@ -36,7 +37,8 @@ employeeRouter.post(
 async function findMany(req: Request, res: Response) {
   try {
     const enterpriseId = req.user?.uid!;
-    const result = await employeeService.list(enterpriseId);
+    const status = req.query.status as EmployeeStatus
+    const result = await employeeService.list(enterpriseId, status);
     res.status(200).json(result);
   } catch (error: any) {
     res.status(400).json({ message: error.message });
@@ -161,5 +163,31 @@ employeeRouter.put(
   validationMiddleware(UpdateEmployeeDto),
   updateOne,
 );
+
+async function archiveOne(req: Request, res: Response) {
+  try {
+    const employeeId = req.params.id as string;
+    await employeeService.updateOneField(employeeId, {
+      status: EmployeeStatus.ARCHIVED,
+    });
+    res.sendStatus(200);
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
+}
+employeeRouter.put("/arquivar/:id", archiveOne);
+
+async function unarchiveOne(req: Request, res: Response) {
+  try {
+    const employeeId = req.params.id as string;
+    await employeeService.updateOneField(employeeId, {
+      status: EmployeeStatus.ACTIVE,
+    });
+    res.sendStatus(200);
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
+}
+employeeRouter.put("/desarquivar/:id", unarchiveOne);
 
 export default employeeRouter;

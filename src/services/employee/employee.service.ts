@@ -11,6 +11,7 @@ import {
 } from "./dto/addEmployeeVoucher.dto";
 import { UpdateEmployeeDto } from "./dto/updateEmployee.dto";
 import { paymentService } from "../payment/payment.service";
+import { EmployeeStatus } from "../../enum/employee.enum";
 
 class EmployeeService extends PatternService {
   constructor() {
@@ -28,20 +29,23 @@ class EmployeeService extends PatternService {
         ? new Date(employeeBody.data_nascimento)
         : null,
       data_cadastro: new Date(),
+      status: EmployeeStatus.ACTIVE,
     };
 
     await this.setup().add(toSave);
   }
 
-  public async list(enterpriseId: string) {
-    const snapShot = await this.setup()
+  public async list(enterpriseId: string, status: EmployeeStatus) {
+    let query = this.setup()
       .where(
         "restaurante_ref",
         "==",
         idToDocumentRef(enterpriseId, COLLECTIONS.RESTAURANTES),
       )
-      .orderBy("nome", "asc")
-      .get();
+      .where("status", "==", status)
+    .orderBy("nome", "asc");
+
+    const snapShot = await query.get();
 
     const employees = snapShot.docs.map((doc) => {
       return docToObject<EmployeeEntity>(doc.id, doc.data()!);
@@ -130,6 +134,20 @@ class EmployeeService extends PatternService {
       });
   }
 
+  public async updateOneField(
+    employeeId: string,
+    body: Partial<UpdateEmployeeDto>,
+  ) {
+    if (body.status === EmployeeStatus.ARCHIVED) {
+      body.arquivadoEm = new Date();
+    } else {
+      body.arquivadoEm = null;
+    }
+    await this.setup()
+      .doc(employeeId)
+      .update({ ...body });
+  }
+
   public async delete(employeeId: string) {
     await db.runTransaction(async (transaction) => {
       transaction.delete(this.setup().doc(employeeId));
@@ -141,6 +159,21 @@ class EmployeeService extends PatternService {
         );
       });
     });
+  }
+
+  public async insertNewField(enterpriseId: string) {
+    const snapshot = await this.setup().get();
+
+    const batch = this.firestore_admin().firestore().batch();
+
+    snapshot.docs.forEach((doc) => {
+      batch.update(doc.ref, {
+        status: EmployeeStatus.ACTIVE,
+        arquivadoEm: null,
+      });
+    });
+
+    await batch.commit();
   }
 }
 
