@@ -8,6 +8,7 @@ import { docToObject, idToDocumentRef } from "../../util/firebase.util";
 import { funcionarioIncentivoService } from "./funcionario.incentivo.service";
 import { PatternService } from "../common/pattern.service";
 import { employeeService } from "../employee/employee.service";
+import { EmployeeStatus } from "../../enum/employee.enum";
 
 class IncentivoService extends PatternService {
   constructor() {
@@ -28,7 +29,7 @@ class IncentivoService extends PatternService {
       transaction.set(incentivoRef, incentivoParaSalvar);
 
       // criando os documentos dos funcionários
-      const funcionarios = await employeeService.list(idEmpresa);
+      const funcionarios = await employeeService.list(idEmpresa, EmployeeStatus.ACTIVE);
       // funcionarios.map((f) => {
       // funcionarioIncentivoService.criar(transaction, incentivoRef, f);
       // });
