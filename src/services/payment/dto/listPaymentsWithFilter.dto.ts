@@ -1,4 +1,4 @@
-import { IsDateString } from "class-validator";
+import { IsArray, IsDateString, IsOptional } from "class-validator";
 
 export class ListPaymentsWithFilterDto {
   @IsDateString()
@@ -6,4 +6,8 @@ export class ListPaymentsWithFilterDto {
 
   @IsDateString()
   data_fim: string;
+
+  @IsArray()
+  @IsOptional()
+  employeeIds: string[];
 }

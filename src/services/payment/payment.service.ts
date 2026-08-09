@@ -69,20 +69,29 @@ class PaymentService extends PatternService {
     const startDate = new Date(filter.data_inicio);
     const endDate = new Date(filter.data_fim);
 
-    const snapShot = await this.setup()
-      .where(
+    let snapShot = this.setup()
+      .where("data_pagamento", ">=", startDate)
+      .where("data_pagamento", "<=", endDate)
+      .orderBy("data_pagamento", "desc");
+
+    if (employeeId !== "allEmployees") {
+      snapShot = snapShot.where(
         "funcionario_ref",
         "==",
         idToDocumentRef(employeeId, COLLECTIONS.FUNCIONARIOS),
-      )
-      .where("data_pagamento", ">=", startDate)
-      .where("data_pagamento", "<=", endDate)
-      .orderBy("data_pagamento", "desc")
-      .get();
+      );
+    } else {
+      const refs = filter.employeeIds.map((emp) =>
+        idToDocumentRef(emp, COLLECTIONS.FUNCIONARIOS),
+      );
+      snapShot = snapShot.where("funcionario_ref", "in", refs);
+    }
 
-    if (snapShot.empty) return [];
+    const snapShotGet = await snapShot.get();
 
-    const paymentsFound = snapShot.docs.map((doc) => {
+    if (snapShotGet.empty) return [];
+
+    const paymentsFound = snapShotGet.docs.map((doc) => {
       return docToObject<PaymentEntity>(doc.id, doc.data()!);
     });
 
